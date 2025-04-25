@@ -23,7 +23,7 @@ public class Partitions {
     }
     
     public Partitions() {
-    	
+    	this.id = -1;
     }
 
     //getters and setters
@@ -90,5 +90,15 @@ public class Partitions {
           
          jdbcTemplate.update(sql);
          System.out.println("last element deleted");
+    }
+    
+    public static Partitions getPartitionById(int partitionId, JdbcTemplate jdbcTemplate) throws Exception {
+    	List<Partitions> partitions = Partitions.listPartitions(jdbcTemplate);
+    	for(int i=0; i< partitions.size(); i++) {
+    		if(partitions.get(i).getId() == partitionId) {
+    			return partitions.get(i);
+    		}
+    	}
+    	return new Partitions();
     }
 }
