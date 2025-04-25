@@ -6,12 +6,19 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class Partitions {
 
+	int id;
 	String name;
 	String lien;
 	
 	// Constructors
     public Partitions(int id, String name, String lien) {
-        this.name = name;
+    	this.id = id;
+    	this.name = name;
+        this.lien = lien;
+    }
+    
+    public Partitions(String name, String lien) {
+    	this.name = name;
         this.lien = lien;
     }
     
@@ -20,6 +27,14 @@ public class Partitions {
     }
 
     //getters and setters
+    public int getId() {
+    	return id;
+    }
+    
+    public void setId(int id) {
+    	this.id = id;
+    }
+    
     public String getName() {
         return name;
     }
@@ -45,10 +60,7 @@ public class Partitions {
     
     
     public static List<Partitions> listPartitions(JdbcTemplate jdbcTemplate) throws Exception {
-        String sql = "INSERT INTO partitions (name, lien) VALUES ("
-                + "'test', 'test.application')";
-         
-        //jdbcTemplate.update(sql);
+       
         
         String sql2 = "SELECT * FROM partitions";
         List<Partitions> partitions = jdbcTemplate.query(sql2, (rs, rowNum) -> 
@@ -58,12 +70,25 @@ public class Partitions {
         		rs.getString("lien")
        			)
        		);
-        partitions.forEach(partition -> System.out.println(partition));
         return partitions;
            
     }
     
+    public static void displayPartitions(JdbcTemplate jdbcTemplate) throws Exception {
+    	listPartitions(jdbcTemplate).forEach(partition -> System.out.println(partition));
+    }
+    
     public static void createPartition(Partitions partition, JdbcTemplate jdbcTemplate) {
-    	
+    	 String sql = "INSERT INTO partitions (name, lien) VALUES ('"
+                 + partition.getName() + "','" + partition.getLien()  + "')";
+          
+         jdbcTemplate.update(sql);
+    }
+    
+    public static void deletePartition(int id, JdbcTemplate jdbcTemplate) {
+    	 String sql = "DELETE FROM partitions WHERE id = " + id;
+          
+         jdbcTemplate.update(sql);
+         System.out.println("last element deleted");
     }
 }
