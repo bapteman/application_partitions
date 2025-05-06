@@ -28,14 +28,14 @@ public class PartitionsController {
     }
 
     @PostMapping("/partitions")
-    void addPartitions(@RequestParam ("name") String name, @RequestParam("lien") String lien) {
+    public String addPartitions(@RequestParam ("name") String name, @RequestParam("lien") String lien) {
     	Partitions newPartition = new Partitions(name, lien);
-    	Partitions.createPartition(newPartition, jdbcTemplate);
+    	return Partitions.createPartition(newPartition, jdbcTemplate);
     }
     
     @DeleteMapping("/partitions")
-    public void delete(@RequestParam("partitionId") int partitionId) throws Exception{
-    	Partitions.deletePartition(partitionId, jdbcTemplate);    	 
+    public String delete(@RequestParam("partitionId") int partitionId) throws Exception{
+    	return Partitions.deletePartition(partitionId, jdbcTemplate);    	 
      }
     
     @GetMapping("/onePartitions")

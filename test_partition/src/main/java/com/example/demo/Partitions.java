@@ -81,18 +81,22 @@ public class Partitions {
     	listPartitions(jdbcTemplate).forEach(partition -> System.out.println(partition));
     }
     
-    public static void createPartition(Partitions partition, JdbcTemplate jdbcTemplate) {
+    public static String createPartition(Partitions partition, JdbcTemplate jdbcTemplate) {
     	 String sql = "INSERT INTO partitions (name, lien) VALUES ('"
                  + partition.getName() + "','" + partition.getLien()  + "')";
           
          jdbcTemplate.update(sql);
+         return "Created partitions with name : " + partition.getName() + " and link : " + partition.getLien();
     }
     
-    public static void deletePartition(int id, JdbcTemplate jdbcTemplate) {
-    	 String sql = "DELETE FROM partitions WHERE id = " + id;
+    public static String deletePartition(int id, JdbcTemplate jdbcTemplate) throws Exception {
+    	if (getPartitionById(id, jdbcTemplate).getId() == -1) {
+    		return "No partitions with id = " + id;
+    	}
+    	String sql = "DELETE FROM partitions WHERE id = " + id;
           
          jdbcTemplate.update(sql);
-         System.out.println("");
+         return "deleted partitions with id = " + id;
     }
     
     public static Partitions getPartitionById(int partitionId, JdbcTemplate jdbcTemplate) throws Exception {
