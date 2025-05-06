@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import jakarta.persistence.Entity;
+
 public class Partitions {
 
 	int id;
@@ -22,6 +24,7 @@ public class Partitions {
         this.lien = lien;
     }
     
+    //if trying to access a partition that doesn't exist, put index at -1 to test for null value
     public Partitions() {
     	this.id = -1;
     }
@@ -89,7 +92,7 @@ public class Partitions {
     	 String sql = "DELETE FROM partitions WHERE id = " + id;
           
          jdbcTemplate.update(sql);
-         System.out.println("last element deleted");
+         System.out.println("");
     }
     
     public static Partitions getPartitionById(int partitionId, JdbcTemplate jdbcTemplate) throws Exception {

@@ -47,8 +47,10 @@ public class DemoController {
 	 		
 	 		//suppresion de partitions (pour l'instant derniere en date)
 	 		+ "<h2> supprimer partitions <h2>"
+	 		+ "<input type=\"number\" id=\"partitionToDeleteId\" placeholder=\"Enter partition ID\" />"
 	 		+ "<button onclick=\"deleteData()\">supprime une partition</button>"
-	 		+ "<script> function deleteData() { fetch('/delete').then(response => response.text()).then(data => alert(data));}</script>"
+	 		+ "<script> function deleteData() { const partitionToDeleteId = document.getElementById(\"partitionToDeleteId\").value;"
+	 		+ "fetch(`/delete?partitionId=${partitionToDeleteId}`).then(response => response.text()).then(data => alert(data));}</script>"
 	 		
 	 		//ajout d'une nouvelle partition 
 	 		+ "<h2> ajouter une partition <h2>"
@@ -61,7 +63,7 @@ public class DemoController {
 	 		+ "fetch(`/insert?newPartitionName=${newPartitionName.value}&newPartitionLink=${newPartitionLink.value}`).then(response => response.text()).then(data => alert(data));}</script>"
 	 		
 	 		//affichage d'une partition par son ID TODO : changer le filtre par le nom et en retourner plusieurs si plusieurs matchs (avec genre contains())
-	 		+ "<h2> afficher une partition specifique partitions <h2>"
+	 		+ "<h2> afficher une partition specifique<h2>"
 	 		+ "<input type=\"number\" id=\"partitionId\" placeholder=\"Enter partition ID\" />"
 	 		+ "<button onclick=\"displayOne()\">affiche la partition</button>"
 	 		+ "<script> function displayOne(){"
@@ -85,11 +87,15 @@ public class DemoController {
 
  @RequestMapping("/delete")
  @ResponseBody
- public String delete() throws Exception{
+ public String delete(@RequestParam("partitionId") int partitionId) throws Exception{
 	try {
-		List<Partitions> partitions = Partitions.listPartitions(jdbcTemplate);
-		Partitions.deletePartition(partitions.get(partitions.size()-1).getId(), jdbcTemplate);
-		return "deleted last element";
+		if(Partitions.getPartitionById(partitionId, jdbcTemplate).getId() != -1) {
+			Partitions.deletePartition(partitionId, jdbcTemplate);
+			return "deleted element with id : " + partitionId;
+		} else {
+			return "no element with id : " + partitionId;
+		}
+		
 	} catch (Exception e) {
 		return "erreur lors de la deletion" + e.getMessage();
 	}
